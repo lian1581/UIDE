@@ -1,29 +1,49 @@
 package com.github.uide.demo.utils;
 
+import android.icu.util.ICUUncheckedIOException;
+
 import com.github.uide.demo.R;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class FileAdapterUtils {
-    public static int SORT_BY_SIZE = 0;
-    public static int SORT_BY_NAME = 1;
-    public static int SORT_BY_DATE = 2;
+    public static final int SORT_BY_SIZE = 0;
+    public static final int SORT_BY_NAME = 1;
+    public static final int SORT_BY_DATE = 2;
 
     //  TODO 完成文件排序
-//    public List<ItemContain> sort(final List<ItemContain> itemContains, int sortStrategy){
-//        List<ItemContain> result;
-//        switch (sortStrategy){
-//            case SORT_BY_DATE:
-//                result=itemContains.stream()
-////                        item.getFileObject()返回值为file
-//                        .sorted(item-> item.getFileObject().lastModified())
-//                        .collect(Collectors.toList());
-//        }
-//        return result;
-//    }
+    public List<ItemContain> sort(final List<ItemContain> itemContains, int sortStrategy) {
+        List<ItemContain> result;
+        List<ItemContain> dir = itemContains.stream()
+                .filter(file -> file.getFileObject().isDirectory())
+                .collect(Collectors.toList());
+        List<ItemContain> fi = itemContains.stream()
+                .filter(file -> file.getFileObject().isFile())
+                .collect(Collectors.toList());
+        switch (sortStrategy) {
+//            case SORT_BY_NAME:
+            case SORT_BY_SIZE:
+                fi = fi.stream()
+                        .sorted((item, t1) -> (int) item.getFileObject().length())
+                        .collect(Collectors.toList());
+                break;
+            default:
+                fi = dir.stream()
+                        .sorted((item, t1) -> (int) item.getFileObject().lastModified())
+                        .collect(Collectors.toList());
+                dir = dir.stream()
+                        .sorted((item, t1) -> (int) item.getFileObject().lastModified())
+                        .collect(Collectors.toList());
+                break;
+        }
+        dir.addAll(fi);
+        return dir;
+    }
+
     public FileAdapterUtils() {
     }
 
