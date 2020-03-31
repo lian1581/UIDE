@@ -2,10 +2,10 @@
 <resources>
 
     <string name="app_name">UIDE</string>
-    <string name="hello_world">Hello world!</string>
     <string name="empty_here">这里是空的哦</string>
-    <string name="file_description">file_description</string>
-    <string name="file_name">file_name</string>
-    <string name="ic_file_type">TODO</string>
+    <string name="file_description" translatable="false">file_description</string>
+    <string name="file_name" translatable="false">file_name</string>
+    <string name="ic_file_type" translatable="false">TODO</string>
+    <string name="empty_workspace_notice">选择文件</string>
 
 </resources>

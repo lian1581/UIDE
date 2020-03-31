@@ -17,17 +17,37 @@ import java.io.File;
 import java.util.List;
 
 public class FileExploreAdapter extends RecyclerView.Adapter<FileExploreAdapter.FileViewHold> {
+    //  设置文件管理器打开模式
+    public int FILE_EXPLORE = 1;
+    public int CHOSE_FILE_ONLY = 0;
+    private int defaultStrategy = FILE_EXPLORE;
 
-    private File parentDir;
+    //  打开时的目录
+    private File parent;
+
+    //  文件操作类
+    private FileAdapterUtils fileAdapterUtils = new FileAdapterUtils();
+
+    //  排序方法
+    private int sortStrategy = FileAdapterUtils.SORT_BY_SIZE;
+
+    //  显示在屏幕上的列表
     private List<FileAdapterUtils.ItemContain> itemContains;
     private OnItemClickListener onItemClickListener;
 
     public FileExploreAdapter(File file) {
-        this.parentDir = file;
+        this.parent = file;
+        init();
     }
 
-    private void init() {
+    public FileExploreAdapter(String path) {
+        this.parent = new File(path);
+        init();
+    }
 
+    //初始化列表
+    private void init() {
+        itemContains = fileAdapterUtils.initItemArray(parent, defaultStrategy);
     }
 
     @NonNull
@@ -40,25 +60,18 @@ public class FileExploreAdapter extends RecyclerView.Adapter<FileExploreAdapter.
     @Override
     public void onBindViewHolder(@NonNull FileViewHold holder, final int position) {
         View currentView = holder.getItemView();
+
         ImageView fileIcon = currentView.findViewById(R.id.imageView);
         TextView file_name = currentView.findViewById(R.id.text_file_name);
         TextView file_description = currentView.findViewById(R.id.text_description);
-//        fileIcon.setImageResource(itemContains.get(position).getFileIcon());
+        fileIcon.setImageResource(itemContains.get(position).getFileIcon());
         file_name.setText(itemContains.get(position).getFileObject().getName());
-        file_description.setText("");
+        file_description.setText(itemContains.get(position).getDescription());
         holder.getItemView()
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        onItemClickListener.onItemClick(v, position);
-                    }
-                });
-        holder.getItemView().setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                onItemClickListener.onLongItemClick(v, position);
-                return true;
-            }
+                .setOnClickListener(v -> onItemClickListener.onItemClick(v, position, itemContains.get(position).getFileObject()));
+        holder.getItemView().setOnLongClickListener(v -> {
+            onItemClickListener.onLongItemClick(v, position, itemContains.get(position).getFileObject());
+            return true;
         });
     }
 
@@ -71,10 +84,26 @@ public class FileExploreAdapter extends RecyclerView.Adapter<FileExploreAdapter.
         return itemContains.size();
     }
 
-    interface OnItemClickListener {
-        void onItemClick(View view, int position);
+    public int getDefaultStrategy() {
+        return defaultStrategy;
+    }
 
-        void onLongItemClick(View view, int position);
+    public void setDefaultStrategy(int defaultStrategy) {
+        this.defaultStrategy = defaultStrategy;
+    }
+
+    public interface OnItemClickListener {
+        void onItemClick(View view, int position, File file);
+
+        void onLongItemClick(View view, int position, File file);
+    }
+
+    public int getSortStrategy() {
+        return sortStrategy;
+    }
+
+    public void setSortStrategy(int sortStrategy) {
+        this.sortStrategy = sortStrategy;
     }
 
     static class FileViewHold extends RecyclerView.ViewHolder {
@@ -89,5 +118,4 @@ public class FileExploreAdapter extends RecyclerView.Adapter<FileExploreAdapter.
             return itemView;
         }
     }
-
 }

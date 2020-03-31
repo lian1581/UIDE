@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UIDE</string>
+    <string name="empty_workspace_notice">CHOSE FILE</string>
+    <string name="empty_here" translatable="false">EMPTY HERE</string>
+</resources>
