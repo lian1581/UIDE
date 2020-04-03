@@ -9,6 +9,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
+import android.view.Menu;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.github.uide.demo.adapter.FileExploreAdapter;
 
 import java.io.File;
+import java.util.Objects;
 
 public class FileExplore extends AppCompatActivity {
     private TextView emptyFolderNotice;
@@ -44,19 +46,13 @@ public class FileExplore extends AppCompatActivity {
                         new AlertDialog.Builder(FileExplore.this)
                                 .setTitle("确定？")
                                 .setMessage("你确定要选择这个文件吗？")
-                                .setPositiveButton("是", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
+                                .setPositiveButton("是", (dialog, which) -> {
 //                                        TODO 完成跳转
-                                    }
                                 }).setNegativeButton("否", null)
                                 .show();
                         Intent intent = new Intent();
                     } else {
-                        if (checkEmptyFolder(file)) {
-                            recyclerView.setVisibility(View.INVISIBLE);
-                            emptyFolderNotice.setVisibility(View.VISIBLE);
-                        }
+                        checkEmptyFolder(file);
                         fileExploreAdapter.refresh(file);
                     }
                 } else {
@@ -66,10 +62,7 @@ public class FileExplore extends AppCompatActivity {
                                 .show();
                         Intent intent = new Intent();
                     } else {
-                        if (checkEmptyFolder(file)) {
-                            recyclerView.setVisibility(View.INVISIBLE);
-                            emptyFolderNotice.setVisibility(View.VISIBLE);
-                        }
+                        checkEmptyFolder(file);
                         fileExploreAdapter.refresh(file);
                     }
                 }
@@ -77,21 +70,55 @@ public class FileExplore extends AppCompatActivity {
 
             @Override
             public void onLongItemClick(View view, int position, File file) {
-//TODO 完成长按弹出选项
+                final String[] operations = new String[]{"复制", "删除", "属性"};
+                AlertDialog alertDialog = new AlertDialog.Builder(FileExplore.this)
+//                        DialogInterface dialog, int which
+//                        TODO 完善删除等操作
+                        .setItems(operations, (dialog, which) -> {
+                            switch (which) {
+                                case 0:
+                                    dialog.dismiss();
+                                case 1:
+                                    dialog.dismiss();
+                                case 2:
+                                    dialog.dismiss();
+                            }
+                        }).show();
             }
         });
     }
 
-    private boolean checkEmptyFolder() {
-        return !(currentParentFolder.listFiles() == null | currentParentFolder.listFiles().length == 0);
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.file_explore_setting, menu);
+        return true;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (currentParentFolder.getAbsolutePath().compareTo(file.getAbsolutePath()) == 0) {
+            finish();
+        }
+        fileExploreAdapter.refresh(currentParentFolder.getParentFile());
+        checkEmptyFolder(currentParentFolder.getParentFile());
+    }
+
+    private void checkEmptyFolder() {
+        if (Objects.requireNonNull(currentParentFolder.listFiles()).length == 0) {
+            recyclerView.setVisibility(View.INVISIBLE);
+            emptyFolderNotice.setVisibility(View.VISIBLE);
+        } else {
+            recyclerView.setVisibility(View.VISIBLE);
+            emptyFolderNotice.setVisibility(View.INVISIBLE);
+        }
+        setTitle(currentParentFolder.getName());
     }
 
     /**
      * @param f 想要检查的文件夹
-     * @return 是：空文件夹
      */
-    private boolean checkEmptyFolder(File f) {
+    private void checkEmptyFolder(File f) {
         this.currentParentFolder = f;
-        return checkEmptyFolder();
+        checkEmptyFolder();
     }
 }

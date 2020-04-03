@@ -30,8 +30,6 @@ public class FileExploreAdapter extends RecyclerView.Adapter<FileExploreAdapter.
 
     //  排序方法
     private int sortStrategy = FileAdapterUtils.SORT_BY_SIZE;
-
-
     private int orderStrategy = FileAdapterUtils.ORDER_ASCENDING;
 
 

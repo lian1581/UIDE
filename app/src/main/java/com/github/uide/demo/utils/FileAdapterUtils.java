@@ -42,29 +42,71 @@ public class FileAdapterUtils {
         return description;
     };
     private itemIcon itemIcon = file -> {
-        String extraName = "(\\.+?).*";
-        int icon = 0;
-        Matcher matcher = Pattern.compile(extraName).matcher(file.getName());
-        if (matcher.find()) {
-            switch (matcher.group()) {
-                case "doc":
-                case "docx":
-                    icon = R.drawable.ic_icon_word;
-                    break;
-                case "xml":
-                case "html":
-                    icon = R.drawable.ic_icon_xml;
-                    break;
-                default:
-                    icon = R.drawable.ic_launcher;
-            }
-            return icon;
+        if (file.isDirectory()) {
+            return R.drawable.ic_folder;
         } else {
-            return R.drawable.ic_launcher;
+            String extraName = "(\\.+?).*";
+            int icon = 0;
+            Matcher matcher = Pattern.compile(extraName).matcher(file.getName());
+            if (matcher.find()) {
+                switch (matcher.group()) {
+                    case "doc":
+                    case "docx":
+                        icon = R.drawable.ic_icon_word;
+                        break;
+                    case "xml":
+                    case "html":
+                        icon = R.drawable.ic_icon_xml;
+                        break;
+                    default:
+                        icon = R.drawable.ic_unknown_file;
+                }
+                return icon;
+            }
+            return R.drawable.ic_unknown_file;
         }
-
     };
 
+
+    public FileAdapterUtils() {
+    }
+
+    /**
+     * 默认：按名称升序排列
+     *
+     * @param file 传入文件实例，用来当做父文件夹
+     * @return 整理好的item
+     */
+    public List<ItemContain> initItemArray(File file) {
+        return generate(file, SORT_BY_NAME, ORDER_ASCENDING);
+    }
+
+    /**
+     * 参数化处理列表
+     *
+     * @param file          传入的文件实例
+     * @param sortStrategy  排序规则
+     * @param orderStrategy 升降序规则
+     * @return 返回整理好的item
+     */
+    public List<ItemContain> initItemArray(File file, int sortStrategy, int orderStrategy) {
+        return generate(file, sortStrategy, orderStrategy);
+    }
+
+    private List<ItemContain> generate(File file, int sortStrategy, int orderStrategy) {
+        File[] subfolder = file.listFiles();
+        List<ItemContain> itemContainList = new ArrayList<>();
+        if (subfolder == null) {
+            return itemContainList;
+        }
+        if (file.exists() && subfolder.length != 0) {
+            for (File f : subfolder) {
+                itemContainList.add(new ItemContain(itemIcon.icon(f)
+                        , f, item_description.description(f), f.getName()));
+            }
+        }
+        return sort(itemContainList, sortStrategy, orderStrategy);
+    }
 
     private List<ItemContain> sort(final List<ItemContain> itemContains, int sortStrategy, int orderStrategy) {
         List<ItemContain> result;
@@ -110,44 +152,6 @@ public class FileAdapterUtils {
             dir.addAll(fi);
         }
         return dir;
-    }
-
-    public FileAdapterUtils() {
-    }
-
-    /**
-     * 默认：按名称升序排列
-     *
-     * @param file 传入文件实例，用来当做父文件夹
-     * @return 整理好的item
-     */
-    public List<ItemContain> initItemArray(File file) {
-        return generate(file, SORT_BY_NAME, ORDER_ASCENDING);
-    }
-
-    /**
-     * @param file          传入的文件实例
-     * @param sortStrategy  排序规则
-     * @param orderStrategy 升降序规则
-     * @return 返回整理好的item
-     */
-    public List<ItemContain> initItemArray(File file, int sortStrategy, int orderStrategy) {
-        return generate(file, sortStrategy, orderStrategy);
-    }
-
-    private List<ItemContain> generate(File file, int sortStrategy, int orderStrategy) {
-        File[] subDIr = file.listFiles();
-        List<ItemContain> itemContainList = new ArrayList<>();
-        if (subDIr == null) {
-            return itemContainList;
-        }
-        if (file.exists() && subDIr.length != 0) {
-            for (File f : subDIr) {
-                itemContainList.add(new ItemContain(itemIcon.icon(f)
-                        , f, item_description.description(f), f.getName()));
-            }
-        }
-        return sort(itemContainList, sortStrategy, orderStrategy);
     }
 
     private interface itemDescription {
