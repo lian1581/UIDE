@@ -31,8 +31,13 @@ public class FileExploreAdapter extends RecyclerView.Adapter<FileExploreAdapter.
     //  排序方法
     private int sortStrategy = FileAdapterUtils.SORT_BY_SIZE;
 
+
+    private int orderStrategy = FileAdapterUtils.ORDER_ASCENDING;
+
+
     //  显示在屏幕上的列表
     private List<FileAdapterUtils.ItemContain> itemContains;
+    //  处理点击事件接口
     private OnItemClickListener onItemClickListener;
 
     public FileExploreAdapter(File file) {
@@ -47,13 +52,18 @@ public class FileExploreAdapter extends RecyclerView.Adapter<FileExploreAdapter.
 
     //初始化列表
     private void init() {
-        itemContains = fileAdapterUtils.initItemArray(parent, defaultStrategy);
+        itemContains = fileAdapterUtils.initItemArray(parent, defaultStrategy, orderStrategy);
     }
 
+    public void refresh(File file) {
+        itemContains = fileAdapterUtils.initItemArray(file, defaultStrategy, orderStrategy);
+        this.notifyDataSetChanged();
+    }
     @NonNull
     @Override
     public FileViewHold onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.recycle_item_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.recycle_item_layout, parent, false);
         return new FileViewHold(view);
     }
 
@@ -84,17 +94,23 @@ public class FileExploreAdapter extends RecyclerView.Adapter<FileExploreAdapter.
         return itemContains.size();
     }
 
-    public int getDefaultStrategy() {
-        return defaultStrategy;
-    }
-
     public void setDefaultStrategy(int defaultStrategy) {
         this.defaultStrategy = defaultStrategy;
     }
 
     public interface OnItemClickListener {
+        /**
+         * @param view     item
+         * @param position 项
+         * @param file     所选文件
+         */
         void onItemClick(View view, int position, File file);
 
+        /**
+         * @param view     item
+         * @param position 项
+         * @param file     所选文件
+         */
         void onLongItemClick(View view, int position, File file);
     }
 
@@ -102,8 +118,20 @@ public class FileExploreAdapter extends RecyclerView.Adapter<FileExploreAdapter.
         return sortStrategy;
     }
 
+    public int getDefaultStrategy() {
+        return defaultStrategy;
+    }
+
     public void setSortStrategy(int sortStrategy) {
         this.sortStrategy = sortStrategy;
+    }
+
+    public int getOrderStrategy() {
+        return orderStrategy;
+    }
+
+    public void setOrderStrategy(int orderStrategy) {
+        this.orderStrategy = orderStrategy;
     }
 
     static class FileViewHold extends RecyclerView.ViewHolder {

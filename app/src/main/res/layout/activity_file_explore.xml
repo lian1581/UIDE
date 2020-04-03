@@ -25,6 +25,7 @@
         android:text="@string/empty_here"
         android:textSize="30sp"
         android:visibility="invisible"
+        android:textColor="#ffffff"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/recycle_file"

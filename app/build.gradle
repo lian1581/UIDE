@@ -1,5 +1,5 @@
 apply plugin: 'com.android.application'
-
+apply plugin: 'android-aspectjx'
 android {
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
@@ -18,7 +18,8 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = 1.8
+        sourceCompatibility = "1.8"
+        targetCompatibility = 1.8
     }
 }
 
