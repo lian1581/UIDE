@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -25,6 +26,7 @@ public class FileExplore extends AppCompatActivity {
     private FileExploreAdapter fileExploreAdapter;
     private File file = Environment.getExternalStorageDirectory();
     private File currentParentFolder = file;
+    private Intent intent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,12 +38,14 @@ public class FileExplore extends AppCompatActivity {
                 , LinearLayoutManager.VERTICAL, false));
         fileExploreAdapter = new FileExploreAdapter(file);
         recyclerView.setAdapter(fileExploreAdapter);
+        intent = getIntent();
+        fileExploreAdapter.setDefaultStrategy(intent.getIntExtra("ExploreMode", FileExploreAdapter.FILE_EXPLORE));
         Toast.makeText(FileExplore.this, file.getName(), Toast.LENGTH_LONG).show();
         fileExploreAdapter.setOnItemClickListener(new FileExploreAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position, File file) {
 //                判断当前文件管理器打开方式，选择文件或管理文件
-                if (fileExploreAdapter.getDefaultStrategy() == fileExploreAdapter.CHOSE_FILE_ONLY) {
+                if (fileExploreAdapter.getDefaultStrategy() == FileExploreAdapter.CHOSE_FILE_ONLY) {
                     if (file.isFile()) {
                         new AlertDialog.Builder(FileExplore.this)
                                 .setTitle("确定？")
@@ -50,7 +54,9 @@ public class FileExplore extends AppCompatActivity {
 //                                        TODO 完成跳转
                                 }).setNegativeButton("否", null)
                                 .show();
-                        Intent intent = new Intent();
+                        Intent intent = new Intent(FileExplore.this, MainActivity.class);
+                        intent.putExtra("path", file.getAbsolutePath());
+                        startActivity(intent);
                     } else {
                         checkEmptyFolder(file);
                         fileExploreAdapter.refresh(file);

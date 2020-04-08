@@ -18,8 +18,8 @@ import java.util.List;
 
 public class FileExploreAdapter extends RecyclerView.Adapter<FileExploreAdapter.FileViewHold> {
     //  设置文件管理器打开模式
-    public int FILE_EXPLORE = 1;
-    public int CHOSE_FILE_ONLY = 0;
+    public static final int FILE_EXPLORE = 1;
+    public static final int CHOSE_FILE_ONLY = 0;
     private int defaultStrategy = FILE_EXPLORE;
 
     //  打开时的目录

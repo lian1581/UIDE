@@ -8,6 +8,12 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+
 public class CodeEditor extends View {
     //The height and width of CodeView
     private int widthSize;
@@ -15,6 +21,8 @@ public class CodeEditor extends View {
 
     //  行号偏移度
     private float startOffset = 0;
+
+    private String path;
 
     //  不同类型字符颜色
     private static int INT_COLOR = 0xFFFFFFFF;
@@ -48,6 +56,10 @@ public class CodeEditor extends View {
         super(context, attrs, defStyleAttr);
     }
 
+    public void init(String path) {
+        this.path = path;
+    }
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -63,6 +75,12 @@ public class CodeEditor extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
+        try {
+            InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream(new File(path)));
+//            while ()
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     public void setStartOffset(float startOffset) {

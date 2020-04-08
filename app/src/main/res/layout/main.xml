@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.github.uide.demo.view.CodeEditor
-        android:id="@+id/codeEditor"
+        android:id="@+id/code_editor"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="invisible"
