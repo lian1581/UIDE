@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">UIDE</string>
+    <string name="empty_workspace_notice">CHOSE FILE</string>
+    <string name="empty_here" translatable="false">EMPTY HERE!</string>
+    <string name="sort_by_name">Sorted by name</string>
+    <string name="sort_by_size">Sorted by size</string>
+    <string name="sort_by_data">Sorted by data</string>
+    <string name="order_by_descending">Descending</string>
+    <string name="order_by_ascending">Ascending</string>
+</resources>
